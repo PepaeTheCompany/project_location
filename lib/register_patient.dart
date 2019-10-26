@@ -1,0 +1,299 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'home_patient.dart';
+
+class register_patient extends StatefulWidget {
+  register_patient({Key key}) : super(key: key);
+
+  @override
+  _MySignUpPageState createState() => _MySignUpPageState();
+}
+
+class _MySignUpPageState extends State<register_patient> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmController = TextEditingController();
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController surenameController = new TextEditingController();
+  TextEditingController phoneController = new TextEditingController();
+  TextEditingController nicknameController = new TextEditingController();
+  TextEditingController hnController = new TextEditingController();
+  TextEditingController detailController = new TextEditingController();
+  TextEditingController addressController = new TextEditingController();
+  TextEditingController countryController = new TextEditingController();
+  TextEditingController postController = new TextEditingController();
+  var mylist = List.generate(10, (i) => "Flutter $i");
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title:
+              Text("สมัครสมาชิกผู้ป่วย", style: TextStyle(color: Colors.white)),
+        ),
+        body: Container(
+            color: Colors.green[50],
+            child: Center(
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                          colors: [Colors.yellow[100], Colors.green[100]])),
+                  margin: EdgeInsets.all(32),
+                  padding: EdgeInsets.all(24),
+                  child: SingleChildScrollView(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      buildTextFieldEmail(),
+                      buildTextFieldPassword(),
+                      buildTextFieldPasswordConfirm(),
+                      buildTextFieldname(),
+                      buildTextFieldsurename(),
+                      buildTextFieldnickname(),
+                      buildTextFieldphone(),
+                      buildTextFieldaddress(),
+                      buildTextFieldcountry(),
+                      buildTextFieldpost(),
+                      buildTextFielddetail(),
+                      buildTexthn(),
+                      buildButtonSignUp(context),
+                    ],
+                  ))),
+            )));
+  }
+
+  Container buildButtonSignUp(BuildContext context) {
+    return Container(
+        constraints: BoxConstraints.expand(height: 65),
+        child: RaisedButton(
+            color: Colors.green[200],
+            child: Text('สมัครสมาชิก',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, color: Colors.white)),
+            shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(14.0)),
+            onPressed: () async {
+              signUp();
+            }),
+        padding: EdgeInsets.all(12));
+  }
+
+  Container buildTextFieldEmail() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "Email"),
+            controller: emailController,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldPassword() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            obscureText: true,
+            controller: passwordController,
+            decoration: InputDecoration.collapsed(hintText: "Password"),
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldPasswordConfirm() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            obscureText: true,
+            controller: confirmController,
+            decoration: InputDecoration.collapsed(hintText: "Re-password"),
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldname() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "ชื่อ"),
+            controller: nameController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldsurename() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "นามสกุล"),
+            controller: surenameController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldphone() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "เบอร์โทร"),
+            controller: phoneController,
+            keyboardType: TextInputType.number,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldaddress() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "ที่อยู่"),
+            controller: addressController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldcountry() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "จังหวัด"),
+            controller: countryController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldpost() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "รหัสไปรษณีย์"),
+            controller: postController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFielddetail() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "อาการป่วย"),
+            controller: detailController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTextFieldnickname() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "ชื่อเล่น"),
+            controller: nicknameController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Container buildTexthn() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            decoration: InputDecoration.collapsed(hintText: "HN Number"),
+            controller: hnController,
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  signUp() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmController.text.trim();
+    if (password == confirmPassword && password.length >= 6) {
+      _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((user) async {
+        final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        final String uid = user.uid.toString();
+        FirebaseDatabase database = new FirebaseDatabase();
+        DatabaseReference databaseReference =
+            database.reference().child('patient');
+        databaseReference.child(uid).set(<String, String>{
+          "email": emailController.text.trim(),
+          "password": passwordController.text.trim(),
+          "Firsname": nameController.text.toString(),
+          "lastname": surenameController.text.toString(),
+          "HNnumber": hnController.text.toString(),
+          "address": addressController.text.toString(),
+          "county": countryController.text.toString(),
+          "detail": detailController.text.toString(),
+          "nickname": nicknameController.text.toString(),
+          "phone": phoneController.text.toString(),
+          "postcode": postController.text.toString(),
+        }).then((_) {
+          print('Transaction  committed.');
+        });
+        DatabaseReference databaseReference1 =
+            database.reference().child('information');
+        databaseReference1.push().set(<String, String>{
+          "email": emailController.text.trim(),
+          "status": "patient",
+          "uid": uid,
+        }).then((_) {
+          print('Transaction  committed.');
+        });
+        print("สมัครสมาชิกสำเร็จ");
+        print("สมัครสมาชิกสำเร็จ");
+
+        checkAuth(context);
+      }).catchError((error) {
+        print(error.message);
+      });
+    } else {
+      print("รหัสผ่านไม่ตรงกัน");
+    }
+  }
+
+  Future checkAuth(BuildContext context) async {
+    FirebaseUser user = await _auth.currentUser();
+    if (user != null) {
+      print("Already singed-in with");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => home_patient(user)));
+    }
+  }
+}
